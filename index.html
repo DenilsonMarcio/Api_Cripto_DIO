@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CoinMarketCap</title>
+        <link rel="stylesheet" type="text/css"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+        <meta charset="utf-8">       
+    </head>
+    <body>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item active" aria-current="page">Consumindo uma API de Criptomoeda</li>
+            </ol>
+          </nav>
+        
+          <div class="d-flex p-3 bd-highlight">
+            <div id='coins'></div>
+          </div>
+       
+
+        <script type="text/javascript">
+            //My api key
+            var apikey = {
+                key: '39304dcd-9a00-4df6-9442-c4db7b5391a0'
+            }
+
+        //GET Fetch Requisition
+        fetch('https://pro-api.coinmarketcap.com/v1/cryptocurrency/map?CMC_PRO_API_KEY=' +
+                apikey.key)
+                .then((response) => {
+                    if(!response.ok) throw new Error('Erro ao executar a requisição, status ' + response.status);
+                    return response.json();
+            })
+            .then((api) => {
+                
+                var texto = "";
+                // Get 100 coins and symbols 
+                
+                for(let i = 0; i < 100; i++){
+                    
+                    // Verifica o status da moeda (Ativo ou Desativo)
+                    let active = 'Ativo'
+                    if(api.data[i].is_active != 1){
+                        active = 'Desativo'
+                    };
+                    
+                    //Show API information
+                    
+                    texto = texto + `
+                    
+                    <h5>DADOS COLETADOS DA MOEDA " ${api.data[i].name} "</h5>
+                    <div class="media">
+                        <img src="coin.jpg" class="align-self-center mr-3" alt="coin" width="200" height="200">
+                        <div class="media-body">
+                        <p>Simbolo: ${api.data[i].symbol}</p>
+                        <p>ID da Moeda: ${api.data[i].id}</p>
+                        <p>Status da Moeda: ${active}</p>
+                        <p>Data de inicio: ${api.data[i].first_historical_data}</p>
+                        <p>Data de atualização: ${api.data[i].last_historical_data}</p>
+                        <p>Posição no Rank: ${api.data[i].rank}</p>
+                        <p>Slug da Moeda: ${api.data[i].slug}</p>
+                        <hr>
+
+                        </div>
+                    </div>
+               
+                    `;
+
+                    document.getElementById("coins").innerHTML = texto;
+                    
+                }
+            })
+            .catch((error) => {
+                console.error(error.message);
+            });
+        </script>    
+    </body>
+</html>
